@@ -17,14 +17,13 @@ document.getElementById("backLogin").addEventListener("click", ()=>{
 document.getElementById("loginBtn").addEventListener("click", ()=>{
     const loginInput = document.getElementById("loginInput").value.trim();
     const loginPassword = document.getElementById("loginPassword").value.trim();
-    
-    const msg = document.getElementById("authMsg") || document.createElement("p");
+
     if(!loginInput || !loginPassword){
         alert("Enter username/email and password");
         return;
     }
 
-    // Find user
+    // Find user by email or username
     let found = null;
     for(let key in users){
         if(key === loginInput || users[key].username === loginInput){
@@ -38,7 +37,7 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
         document.getElementById("loginStep").style.display="none";
         document.getElementById("mainBox").style.display="block";
         alert("Login successful!");
-    }else{
+    } else {
         alert("Invalid login!");
     }
 });
@@ -81,21 +80,23 @@ async function scanImage(){
     const answerDiv = document.getElementById("answer");
     answerDiv.innerText = "Scanning image...";
 
-    const result = await Tesseract.recognize(file, 'eng',{
-        logger: m => console.log(m)
-    });
-
-    document.getElementById("question").value = result.data.text;
-    answerDiv.innerText = "Image scanned! You can now solve the question.";
+    try {
+        const result = await Tesseract.recognize(file, 'eng',{
+            logger: m => console.log(m)
+        });
+        document.getElementById("question").value = result.data.text.trim();
+        answerDiv.innerText = "Image scanned! You can now solve the question.";
+    } catch(e){
+        console.error(e);
+        answerDiv.innerText = "Error scanning image!";
+    }
 }
 
 // ------------------- OPENROUTER API REQUEST -------------------
 async function askOpenRouter(questionText, imageBase64="", videoUrl=""){
-    const messagesContent = [{ type:"text", text: questionText }];
-    if(imageBase64) messagesContent.push({ type:"image_url", image_url:{url:imageBase64} });
-    if(videoUrl) messagesContent.push({ type:"video_url", video_url:{url:videoUrl} });
+    try {
+        const messagesContent = questionText; // just plain string
 
-    try{
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions",{
             method:"POST",
             headers:{
@@ -109,9 +110,13 @@ async function askOpenRouter(questionText, imageBase64="", videoUrl=""){
                 max_tokens:500
             })
         });
+
         const data = await response.json();
+        console.log("OpenRouter API response:", data);
+
         return data.choices?.[0]?.message?.content || "No answer returned";
-    }catch(err){
+
+    } catch(err){
         console.error(err);
         return "Error fetching answer!";
     }
@@ -129,7 +134,7 @@ async function solve(){
     const answerDiv = document.getElementById("answer");
     answerDiv.innerText = "Processing...";
 
-    // Image (optional)
+    // Convert image to Base64 if selected
     let imageBase64 = "";
     const imgFile = document.getElementById("scanImage").files[0];
     if(imgFile){
@@ -141,18 +146,20 @@ async function solve(){
         });
     }
 
+    // Ask OpenRouter
     let ans = await askOpenRouter(questionInput, imageBase64);
 
+    // Multi-language prefix
     if(lang=="Hindi") ans="उत्तर: "+ans;
     if(lang=="Bengali") ans="উত্তর: "+ans;
     if(lang=="Hinglish") ans="Answer: "+ans;
     if(lang=="Banglish") ans="Answer: "+ans;
 
-    // Step by step typing effect
-    answerDiv.innerText="";
+    // Step-by-step typing animation
+    answerDiv.innerText = "";
     for(let i=0;i<ans.length;i++){
-        answerDiv.innerText+=ans[i];
-        await new Promise(r=>setTimeout(r,15));
+        answerDiv.innerText += ans[i];
+        await new Promise(r => setTimeout(r, 15));
     }
 
     // Save last QA per user
