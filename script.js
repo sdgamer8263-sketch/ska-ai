@@ -30,38 +30,16 @@ backLogin.onclick = () => {
   loginStep.style.display = "block";
 };
 
-// LOGIN logic (single input = Email OR Username)
-loginBtn.onclick = () => {
-  const input = loginInput.value.trim();
-  const pass = loginPassword.value.trim();
-
-  if (!input || !pass) { alert("Fill both fields"); return; }
-
-  let found = null;
-  for (let key in users) {
-    if (key === input || users[key].username === input) {
-      found = users[key];
-      break;
-    }
-  }
-
-  if (!found) { alert("❌ User not found"); return; }
-  if (found.password !== pass) { alert("❌ Incorrect password"); return; }
-
-  alert("✅ Login successful! Welcome " + found.username);
-  loginStep.style.display = "none";
-  mainBox.style.display = "block";
-};
-
-// REGISTER logic
+// REGISTER
 regSubmit.onclick = () => {
   const username = regUsername.value.trim();
-  const email = regEmail.value.trim();
+  const email = regEmail.value.trim().toLowerCase();
   const password = regPassword.value.trim();
 
   if (!username || !email || !password) { alert("Fill all fields"); return; }
 
-  if (users[email] || Object.values(users).some(u=>u.username===username)) {
+  // Check if username/email already exists
+  if (users[email] || Object.values(users).some(u=>u.username.toLowerCase()===username.toLowerCase())) {
     alert("❌ Email or Username already exists");
     return;
   }
@@ -73,6 +51,29 @@ regSubmit.onclick = () => {
   regUsername.value=""; regEmail.value=""; regPassword.value="";
   registerStep.style.display="none";
   loginStep.style.display="block";
+};
+
+// LOGIN (single input = Email OR Username)
+loginBtn.onclick = () => {
+  const input = loginInput.value.trim().toLowerCase();
+  const pass = loginPassword.value.trim();
+
+  if (!input || !pass) { alert("Fill both fields"); return; }
+
+  let found = null;
+  for (let key in users) {
+    if (key.toLowerCase() === input || users[key].username.toLowerCase() === input) {
+      found = users[key];
+      break;
+    }
+  }
+
+  if (!found) { alert("❌ User not found"); return; }
+  if (found.password !== pass) { alert("❌ Incorrect password"); return; }
+
+  alert("✅ Login successful! Welcome " + found.username);
+  loginStep.style.display = "none";
+  mainBox.style.display = "block";
 };
 
 // Solve question (basic multi-language)
