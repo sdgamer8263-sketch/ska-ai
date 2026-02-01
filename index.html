@@ -9,47 +9,51 @@
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div id="welcomeBox">
-      <h1 class="neon">🤖 Welcome to SKA HOSTING BUDDY AI 1.0 🤖</h1>
-      <p class="subtitle">Your AI assistant for Class 1–12 & JEE questions</p>
-      <p class="why">
-        Why is this AI good?<br>
-        - Multi-language support<br>
-        - Scan or type your questions<br>
-        - Step-by-step solutions<br>
-        - 24/7 help
-      </p>
-    </div>
-
-    <div id="authBox">
-      <h2 class="neon">Login / Register</h2>
-      <input id="email" type="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
-      <div class="btn-group">
-        <button id="loginBtn">Login</button>
-        <button id="registerBtn">Register</button>
-      </div>
-    </div>
-
-    <div id="mainBox" style="display:none;">
-      <textarea id="question" placeholder="Type your question here..."></textarea>
-      <input type="file" accept="image/*" onchange="scanImage(event)">
-      <select id="language">
-        <option>English</option>
-        <option>Hindi</option>
-        <option>Bengali</option>
-        <option>Hinglish</option>
-        <option>Banglish</option>
-      </select>
-      <button onclick="solve()">Solve Question</button>
-      <div id="answer"></div>
-    </div>
-
+  <div id="welcomeBox">
+    <h1 class="neon">🤖 Welcome to SKA HOSTING BUDDY AI 1.0 🤖</h1>
+    <p class="subtitle">Your AI assistant for Class 1–12 & JEE questions</p>
+    <p class="why">
+      Why is this AI good?<br>
+      - Multi-language support<br>
+      - Scan or type your questions<br>
+      - Step-by-step solutions<br>
+      - 24/7 help
+    </p>
   </div>
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="script.js"></script>
+  <div id="authBox">
+    <h2 class="neon">Login / Register</h2>
+
+    <!-- Username only for register -->
+    <input id="username" type="text" placeholder="Username (only for register)">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <div class="btn-group">
+      <button id="loginBtn">Login</button>
+      <button id="registerBtn">Register</button>
+    </div>
+  </div>
+
+  <div id="mainBox" style="display:none;">
+    <textarea id="question" placeholder="Type your question here..."></textarea>
+    <input type="file" accept="image/*" onchange="scanImage(event)">
+    <select id="language">
+      <option>English</option>
+      <option>Hindi</option>
+      <option>Bengali</option>
+      <option>Hinglish</option>
+      <option>Banglish</option>
+    </select>
+    <button onclick="solve()">Solve Question</button>
+    <div id="answer"></div>
+  </div>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
