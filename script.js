@@ -6,13 +6,12 @@ const loginStep = document.getElementById("loginStep");
 const registerStep = document.getElementById("registerStep");
 const mainBox = document.getElementById("mainBox");
 
+const loginInput = document.getElementById("loginInput");
+const loginPassword = document.getElementById("loginPassword");
 const loginBtn = document.getElementById("loginBtn");
+
 const showRegister = document.getElementById("showRegister");
 const backLogin = document.getElementById("backLogin");
-
-const loginEmail = document.getElementById("loginEmail");
-const loginUsername = document.getElementById("loginUsername");
-const loginPassword = document.getElementById("loginPassword");
 
 const regUsername = document.getElementById("regUsername");
 const regEmail = document.getElementById("regEmail");
@@ -31,20 +30,16 @@ backLogin.onclick = () => {
   loginStep.style.display = "block";
 };
 
-// LOGIN
+// LOGIN logic (single input = Email OR Username)
 loginBtn.onclick = () => {
-  const emailInput = loginEmail.value.trim();
-  const usernameInput = loginUsername.value.trim();
+  const input = loginInput.value.trim();
   const pass = loginPassword.value.trim();
 
-  if ((!emailInput && !usernameInput) || !pass) {
-    alert("Fill Email/Username and Password");
-    return;
-  }
+  if (!input || !pass) { alert("Fill both fields"); return; }
 
   let found = null;
   for (let key in users) {
-    if ((emailInput && key === emailInput) || (usernameInput && users[key].username === usernameInput)) {
+    if (key === input || users[key].username === input) {
       found = users[key];
       break;
     }
@@ -58,7 +53,7 @@ loginBtn.onclick = () => {
   mainBox.style.display = "block";
 };
 
-// REGISTER
+// REGISTER logic
 regSubmit.onclick = () => {
   const username = regUsername.value.trim();
   const email = regEmail.value.trim();
@@ -80,7 +75,7 @@ regSubmit.onclick = () => {
   loginStep.style.display="block";
 };
 
-// Solve question
+// Solve question (basic multi-language)
 window.solve = () => {
   const q = document.getElementById("question").value.trim();
   const lang = document.getElementById("language").value;
