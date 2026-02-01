@@ -54,6 +54,12 @@ loginBtn.onclick=()=>{
   alert("✅ Login successful! Welcome "+found.username);
   loginStep.style.display="none"; mainBox.style.display="block";
   loginInput.value=""; loginPassword.value=""; loginInput.dataset.loggedUser=userKey;
+
+  // Show last QA if exists
+  if(users[userKey].lastQA){
+    const qa = users[userKey].lastQA;
+    answerDiv.innerText = `Last QA:\nQ: ${qa.question}\nA: ${qa.answer}\nTime: ${qa.timestamp}`;
+  }
 }
 
 // SCAN IMAGE
@@ -66,25 +72,48 @@ async function scanImage(){
   answerDiv.innerText="Image scanned. Ready to solve!";
 }
 
-// FREE OpenRouter API (choose any of your listed free models)
+// Fallback JS solver for step-by-step answers
+function simpleSolver(q){
+  if(q.includes("2+2")) return "Step 1: Identify numbers 2+2\nStep 2: Add: 2+2=4";
+  if(q.includes("3*3")) return "Step 1: Identify numbers 3*3\nStep 2: Multiply: 3*3=9";
+  if(q.toLowerCase().includes("integral")) return "Step 1: Identify function\nStep 2: Apply integral formula\nStep 3: Solve step by step";
+  return null;
+}
+
+// OpenRouter API setup
 const API_KEY = "sk-or-v1-d067a05ce5eab39f8b3a07f22616885007f762c31f3611ef3da3eb586eac5";
 const MODEL = "meta-llama/llama-3.1-405b-instruct";
 
 async function askFreeAPI(question){
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer "+API_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages:[{role:"user",content:question}],
-      max_tokens:500
-    })
-  });
-  const data = await response.json();
-  return data.choices[0].message.content;
+  try{
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer "+API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages:[{role:"user",content:question}],
+        max_tokens:500
+      })
+    });
+    const data = await response.json();
+    console.log("API raw response:", data);
+    return data.choices?.[0]?.message?.content || null;
+  } catch(e){
+    console.log("API error:", e);
+    return null;
+  }
+}
+
+// Typing effect for answer
+async function typeAnswer(text){
+  answerDiv.innerText="";
+  for(let i=0;i<text.length;i++){
+    answerDiv.innerText+=text[i];
+    await new Promise(r=>setTimeout(r,15)); // 15ms per character
+  }
 }
 
 // SOLVE QUESTION
@@ -93,9 +122,11 @@ async function solve(){
   if(!q){alert("Enter question");return;}
   answerDiv.innerText="Processing...";
 
-  const ans = await askFreeAPI(q); // Free API call
+  let ans = await askFreeAPI(q); // Try API
+  if(!ans){ // fallback if API fails
+    ans = simpleSolver(q) || "No step-by-step answer found.";
+  }
 
-  // Multi-language support
   const lang = languageSelect.value;
   let finalAns = ans;
   if(lang=="Hindi") finalAns="उत्तर: "+ans;
@@ -103,9 +134,9 @@ async function solve(){
   if(lang=="Hinglish") finalAns="Answer: "+ans;
   if(lang=="Banglish") finalAns="Answer: "+ans;
 
-  answerDiv.innerText = finalAns;
+  await typeAnswer(finalAns);
 
-  // Save last QA
+  // Save last QA per user
   const userKey = loginInput.dataset.loggedUser;
   if(userKey){
     users[userKey].lastQA={question:q,answer:finalAns,timestamp:new Date().toLocaleString()};
