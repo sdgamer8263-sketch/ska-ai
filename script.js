@@ -1,3 +1,6 @@
+// Clear old localStorage if needed for fresh testing
+// localStorage.removeItem("skaUsers");
+
 // Users stored in localStorage
 let users = JSON.parse(localStorage.getItem("skaUsers") || "{}");
 
@@ -30,7 +33,7 @@ backLogin.onclick = () => {
   loginStep.style.display = "block";
 };
 
-// REGISTER
+// REGISTER logic
 regSubmit.onclick = () => {
   const username = regUsername.value.trim();
   const email = regEmail.value.trim().toLowerCase();
@@ -38,7 +41,7 @@ regSubmit.onclick = () => {
 
   if (!username || !email || !password) { alert("Fill all fields"); return; }
 
-  // Check if username/email already exists
+  // Check if email or username already exists
   if (users[email] || Object.values(users).some(u=>u.username.toLowerCase()===username.toLowerCase())) {
     alert("❌ Email or Username already exists");
     return;
@@ -53,7 +56,7 @@ regSubmit.onclick = () => {
   loginStep.style.display="block";
 };
 
-// LOGIN (single input = Email OR Username)
+// LOGIN logic (single input = Email OR Username)
 loginBtn.onclick = () => {
   const input = loginInput.value.trim().toLowerCase();
   const pass = loginPassword.value.trim();
@@ -61,9 +64,11 @@ loginBtn.onclick = () => {
   if (!input || !pass) { alert("Fill both fields"); return; }
 
   let found = null;
-  for (let key in users) {
-    if (key.toLowerCase() === input || users[key].username.toLowerCase() === input) {
-      found = users[key];
+
+  for (let emailKey in users) {
+    const user = users[emailKey];
+    if (emailKey.toLowerCase() === input || user.username.toLowerCase() === input) {
+      found = user;
       break;
     }
   }
@@ -76,7 +81,7 @@ loginBtn.onclick = () => {
   mainBox.style.display = "block";
 };
 
-// Solve question (basic multi-language)
+// AI Question Solver
 window.solve = () => {
   const q = document.getElementById("question").value.trim();
   const lang = document.getElementById("language").value;
