@@ -1,18 +1,69 @@
 body {
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background: #0f0f1f;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
   text-align: center;
-  padding: 10px;
+  width: 95%;
+  max-width: 500px;
 }
-textarea, input, select {
+
+input, select, textarea, button {
   width: 90%;
-  margin: 5px;
-  padding: 10px;
-}
-button {
-  padding: 10px;
-  background: #22c55e;
+  margin: 8px 0;
+  padding: 12px;
   border: none;
-  color: black;
+  border-radius: 8px;
+  outline: none;
+}
+
+textarea { height: 100px; resize: none; }
+
+button {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+  transition: 0.3s;
+}
+
+button:hover {
+  box-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff, 0 0 40px #ff00ff inset;
+  transform: scale(1.05);
+}
+
+.neon {
+  font-size: 2em;
+  color: #0ff;
+  text-shadow:
+    0 0 5px #0ff,
+    0 0 10px #0ff,
+    0 0 20px #0ff,
+    0 0 40px #0ff;
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.85; }
+}
+
+.subtitle, .why {
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-around;
 }
