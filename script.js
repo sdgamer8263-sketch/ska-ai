@@ -10,6 +10,9 @@ const loginBtn = document.getElementById("loginBtn");
 const showRegister = document.getElementById("showRegister");
 const backLogin = document.getElementById("backLogin");
 
+const loginEmailUsername = document.getElementById("loginEmailUsername");
+const loginPassword = document.getElementById("loginPassword");
+
 const regUsername = document.getElementById("regUsername");
 const regEmail = document.getElementById("regEmail");
 const regPassword = document.getElementById("regPassword");
@@ -27,12 +30,12 @@ backLogin.onclick = () => {
   loginStep.style.display = "block";
 };
 
-// Login logic
+// LOGIN
 loginBtn.onclick = () => {
-  const input = prompt("Enter your Email or Username:");
-  const pass = prompt("Enter your Password:");
+  const input = loginEmailUsername.value.trim();
+  const pass = loginPassword.value.trim();
 
-  if (!input || !pass) { alert("Fill all fields!"); return; }
+  if (!input || !pass) { alert("Fill all fields"); return; }
 
   let found = null;
   for (let key in users) {
@@ -50,7 +53,7 @@ loginBtn.onclick = () => {
   mainBox.style.display = "block";
 };
 
-// Register logic
+// REGISTER
 regSubmit.onclick = () => {
   const username = regUsername.value.trim();
   const email = regEmail.value.trim();
@@ -67,25 +70,25 @@ regSubmit.onclick = () => {
   localStorage.setItem("skaUsers", JSON.stringify(users));
 
   alert("✅ Registration successful! Now login.");
-  regUsername.value = ""; regEmail.value = ""; regPassword.value = "";
-  registerStep.style.display = "none";
-  loginStep.style.display = "block";
+  regUsername.value=""; regEmail.value=""; regPassword.value="";
+  registerStep.style.display="none";
+  loginStep.style.display="block";
 };
 
-// Basic solve question function
+// Solve question
 window.solve = () => {
   const q = document.getElementById("question").value.trim();
   const lang = document.getElementById("language").value;
   if (!q) { alert("Enter question first!"); return; }
 
-  let answer = "";
+  let answer="";
   if (/2\s*\+\s*2/.test(q)) answer="2 + 2 = 4";
   else answer="Step by step solution will appear here.";
 
-  if (lang=="Hindi") answer="उत्तर: "+answer;
-  if (lang=="Bengali") answer="উত্তর: "+answer;
-  if (lang=="Hinglish") answer="Answer: "+answer;
-  if (lang=="Banglish") answer="Answer: "+answer;
+  if(lang=="Hindi") answer="उत्तर: "+answer;
+  if(lang=="Bengali") answer="উত্তর: "+answer;
+  if(lang=="Hinglish") answer="Answer: "+answer;
+  if(lang=="Banglish") answer="Answer: "+answer;
 
-  document.getElementById("answer").innerText = answer;
+  document.getElementById("answer").innerText=answer;
 };
