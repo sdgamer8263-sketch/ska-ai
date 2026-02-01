@@ -1,83 +1,86 @@
-const usernameField = document.getElementById("username");
-const emailUsernameField = document.getElementById("emailUsername");
-const passwordField = document.getElementById("password");
-const actionBtn = document.getElementById("actionBtn");
-const toggleBtn = document.getElementById("toggleBtn");
-const formTitle = document.getElementById("formTitle");
+// Users stored in localStorage
+let users = JSON.parse(localStorage.getItem("skaUsers") || "{}");
 
-let isLogin = true; // Default login
+// Elements
+const loginStep = document.getElementById("loginStep");
+const registerStep = document.getElementById("registerStep");
+const mainBox = document.getElementById("mainBox");
 
-// Toggle Login/Register
-toggleBtn.onclick = () => {
-  isLogin = !isLogin;
-  if (isLogin) {
-    usernameField.style.display = "none";
-    emailUsernameField.placeholder = "Email or Username";
-    actionBtn.innerText = "Login";
-    toggleBtn.innerText = "Switch to Register";
-    formTitle.innerText = "Login";
-  } else {
-    usernameField.style.display = "block";
-    emailUsernameField.placeholder = "Email";
-    actionBtn.innerText = "Register";
-    toggleBtn.innerText = "Switch to Login";
-    formTitle.innerText = "Register";
-  }
+const loginBtn = document.getElementById("loginBtn");
+const showRegister = document.getElementById("showRegister");
+const backLogin = document.getElementById("backLogin");
+
+const regUsername = document.getElementById("regUsername");
+const regEmail = document.getElementById("regEmail");
+const regPassword = document.getElementById("regPassword");
+const regSubmit = document.getElementById("regSubmit");
+
+// Show register form
+showRegister.onclick = () => {
+  loginStep.style.display = "none";
+  registerStep.style.display = "block";
 };
 
-// Action button
-actionBtn.onclick = () => {
-  const username = usernameField.value.trim();
-  const emailUsername = emailUsernameField.value.trim();
-  const password = passwordField.value.trim();
+// Back to login
+backLogin.onclick = () => {
+  registerStep.style.display = "none";
+  loginStep.style.display = "block";
+};
 
-  if (!emailUsername || !password || (!isLogin && !username)) {
-    alert("Fill all required fields!");
+// Login logic
+loginBtn.onclick = () => {
+  const input = prompt("Enter your Email or Username:");
+  const pass = prompt("Enter your Password:");
+
+  if (!input || !pass) { alert("Fill all fields!"); return; }
+
+  let found = null;
+  for (let key in users) {
+    if (key === input || users[key].username === input) {
+      found = users[key];
+      break;
+    }
+  }
+
+  if (!found) { alert("❌ User not found"); return; }
+  if (found.password !== pass) { alert("❌ Incorrect password"); return; }
+
+  alert("✅ Login successful! Welcome " + found.username);
+  loginStep.style.display = "none";
+  mainBox.style.display = "block";
+};
+
+// Register logic
+regSubmit.onclick = () => {
+  const username = regUsername.value.trim();
+  const email = regEmail.value.trim();
+  const password = regPassword.value.trim();
+
+  if (!username || !email || !password) { alert("Fill all fields"); return; }
+
+  if (users[email] || Object.values(users).some(u=>u.username===username)) {
+    alert("❌ Email or Username already exists");
     return;
   }
 
-  // Load users from localStorage
-  let users = JSON.parse(localStorage.getItem("skaUsers") || "{}");
+  users[email] = {username,password};
+  localStorage.setItem("skaUsers", JSON.stringify(users));
 
-  if (isLogin) {
-    // Login
-    let found = null;
-    for (let key in users) {
-      if (key === emailUsername || users[key].username === emailUsername) {
-        found = users[key];
-        break;
-      }
-    }
-    if (!found) { alert("User not found"); return; }
-    if (found.password !== password) { alert("Incorrect password"); return; }
-    alert("✅ Login successful! Welcome " + found.username);
-    document.getElementById("authBox").style.display = "none";
-    document.getElementById("mainBox").style.display = "block";
-  } else {
-    // Register
-    if (users[emailUsername] || Object.values(users).some(u=>u.username===username)) {
-      alert("Email or username already exists");
-      return;
-    }
-    users[emailUsername] = {username,password};
-    localStorage.setItem("skaUsers", JSON.stringify(users));
-    alert("✅ Registration successful! Now login.");
-    usernameField.value = "";
-    emailUsernameField.value = "";
-    passwordField.value = "";
-    toggleBtn.click(); // Switch to login
-  }
+  alert("✅ Registration successful! Now login.");
+  regUsername.value = ""; regEmail.value = ""; regPassword.value = "";
+  registerStep.style.display = "none";
+  loginStep.style.display = "block";
 };
 
-// Solve question (basic)
+// Basic solve question function
 window.solve = () => {
   const q = document.getElementById("question").value.trim();
   const lang = document.getElementById("language").value;
   if (!q) { alert("Enter question first!"); return; }
 
   let answer = "";
-  if (/2\s*\+\s*2/.test(q)) answer = "2 + 2 = 4";
-  else answer = "Step by step solution will appear here.";
+  if (/2\s*\+\s*2/.test(q)) answer="2 + 2 = 4";
+  else answer="Step by step solution will appear here.";
 
   if (lang=="Hindi") answer="उत्तर: "+answer;
   if (lang=="Bengali") answer="উত্তর: "+answer;
