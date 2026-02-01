@@ -1,52 +1,99 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #0f0f1f;
-  font-family: Arial, sans-serif;
-  color: white;
-}
+// Users stored in localStorage
+let users = JSON.parse(localStorage.getItem("skaUsers") || "{}");
 
-.container { text-align: center; width: 90%; max-width: 450px; }
+// Elements
+const loginStep = document.getElementById("loginStep");
+const registerStep = document.getElementById("registerStep");
+const mainBox = document.getElementById("mainBox");
 
-input, textarea {
-  width: 90%;
-  margin: 8px 0;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-}
+const loginBtn = document.getElementById("loginBtn");
+const showRegister = document.getElementById("showRegister");
+const backLogin = document.getElementById("backLogin");
 
-textarea { height: 100px; resize: none; }
+const loginEmail = document.getElementById("loginEmail");
+const loginUsername = document.getElementById("loginUsername");
+const loginPassword = document.getElementById("loginPassword");
 
-.neon { 
-  font-size: 2em; 
-  color: #0ff; 
-  text-shadow: 0 0 5px #0ff,0 0 10px #0ff,0 0 20px #0ff,0 0 40px #0ff; 
-  animation: flicker 1.5s infinite alternate; 
-}
+const regUsername = document.getElementById("regUsername");
+const regEmail = document.getElementById("regEmail");
+const regPassword = document.getElementById("regPassword");
+const regSubmit = document.getElementById("regSubmit");
 
-@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;} 20%,24%,55% {opacity:0.5;text-shadow:none;} }
+// Show register form
+showRegister.onclick = () => {
+  loginStep.style.display = "none";
+  registerStep.style.display = "block";
+};
 
-.neonBtn {
-  padding: 12px 20px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: none;
-  background: linear-gradient(45deg,#0ff,#f0f);
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 10px #0ff,0 0 20px #f0f;
-  transition:0.3s;
-  animation: neonBtnGlow 2s infinite alternate;
-}
+// Back to login
+backLogin.onclick = () => {
+  registerStep.style.display = "none";
+  loginStep.style.display = "block";
+};
 
-.neonBtn:hover { transform: scale(1.05); }
+// LOGIN
+loginBtn.onclick = () => {
+  const emailInput = loginEmail.value.trim();
+  const usernameInput = loginUsername.value.trim();
+  const pass = loginPassword.value.trim();
 
-@keyframes neonBtnGlow { 0%{box-shadow:0 0 10px #0ff,0 0 20px #f0f;} 50%{box-shadow:0 0 20px #0ff,0 0 30px #ff0;} 100%{box-shadow:0 0 15px #0ff,0 0 25px #ff0;} }
+  if ((!emailInput && !usernameInput) || !pass) {
+    alert("Fill Email/Username and Password");
+    return;
+  }
 
-.linkBtn { color: #0ff; text-decoration: underline; cursor: pointer; }
+  let found = null;
+  for (let key in users) {
+    if ((emailInput && key === emailInput) || (usernameInput && users[key].username === usernameInput)) {
+      found = users[key];
+      break;
+    }
+  }
+
+  if (!found) { alert("❌ User not found"); return; }
+  if (found.password !== pass) { alert("❌ Incorrect password"); return; }
+
+  alert("✅ Login successful! Welcome " + found.username);
+  loginStep.style.display = "none";
+  mainBox.style.display = "block";
+};
+
+// REGISTER
+regSubmit.onclick = () => {
+  const username = regUsername.value.trim();
+  const email = regEmail.value.trim();
+  const password = regPassword.value.trim();
+
+  if (!username || !email || !password) { alert("Fill all fields"); return; }
+
+  if (users[email] || Object.values(users).some(u=>u.username===username)) {
+    alert("❌ Email or Username already exists");
+    return;
+  }
+
+  users[email] = {username,password};
+  localStorage.setItem("skaUsers", JSON.stringify(users));
+
+  alert("✅ Registration successful! Now login.");
+  regUsername.value=""; regEmail.value=""; regPassword.value="";
+  registerStep.style.display="none";
+  loginStep.style.display="block";
+};
+
+// Solve question
+window.solve = () => {
+  const q = document.getElementById("question").value.trim();
+  const lang = document.getElementById("language").value;
+  if (!q) { alert("Enter question first!"); return; }
+
+  let answer="";
+  if (/2\s*\+\s*2/.test(q)) answer="2 + 2 = 4";
+  else answer="Step by step solution will appear here.";
+
+  if(lang=="Hindi") answer="उत्तर: "+answer;
+  if(lang=="Bengali") answer="উত্তর: "+answer;
+  if(lang=="Hinglish") answer="Answer: "+answer;
+  if(lang=="Banglish") answer="Answer: "+answer;
+
+  document.getElementById("answer").innerText=answer;
+};
