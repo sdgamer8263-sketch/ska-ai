@@ -65,13 +65,6 @@ document.getElementById("regSubmit").addEventListener("click", ()=>{
     document.getElementById("loginStep").style.display="block";
 });
 
-// ------------------- LOGOUT -------------------
-document.getElementById("logoutBtn").addEventListener("click", ()=>{
-    currentUser = null;
-    document.getElementById("mainBox").style.display="none";
-    document.getElementById("loginStep").style.display="block";
-});
-
 // ------------------- SCAN IMAGE USING TESSERACT -------------------
 async function scanImage(){
     const file = document.getElementById("scanImage").files[0];
@@ -93,10 +86,8 @@ async function scanImage(){
 }
 
 // ------------------- OPENROUTER API REQUEST -------------------
-async function askOpenRouter(questionText, imageBase64="", videoUrl=""){
+async function askOpenRouter(questionText){
     try {
-        const messagesContent = questionText; // just plain string
-
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions",{
             method:"POST",
             headers:{
@@ -104,8 +95,8 @@ async function askOpenRouter(questionText, imageBase64="", videoUrl=""){
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({
-                model:"allenai/molmo-2-8b:free",
-                messages:[{role:"user", content: messagesContent}],
+                model:"meta-llama/llama-3.1-405b-instruct:free",
+                messages:[{role:"user", content: questionText}],
                 reasoning:true,
                 max_tokens:500
             })
@@ -113,7 +104,6 @@ async function askOpenRouter(questionText, imageBase64="", videoUrl=""){
 
         const data = await response.json();
         console.log("OpenRouter API response:", data);
-
         return data.choices?.[0]?.message?.content || "No answer returned";
 
     } catch(err){
@@ -134,20 +124,8 @@ async function solve(){
     const answerDiv = document.getElementById("answer");
     answerDiv.innerText = "Processing...";
 
-    // Convert image to Base64 if selected
-    let imageBase64 = "";
-    const imgFile = document.getElementById("scanImage").files[0];
-    if(imgFile){
-        imageBase64 = await new Promise((resolve,reject)=>{
-            const reader = new FileReader();
-            reader.onload = ()=>resolve(reader.result);
-            reader.onerror = err=>reject(err);
-            reader.readAsDataURL(imgFile);
-        });
-    }
-
     // Ask OpenRouter
-    let ans = await askOpenRouter(questionInput, imageBase64);
+    let ans = await askOpenRouter(questionInput);
 
     // Multi-language prefix
     if(lang=="Hindi") ans="उत्तर: "+ans;
