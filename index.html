@@ -22,17 +22,23 @@
     </p>
   </div>
 
-  <div id="authBox">
-    <h2 class="neon" id="formTitle">Login</h2>
-    <input id="username" type="text" placeholder="Username" style="display:none">
-    <input id="emailUsername" type="text" placeholder="Email or Username">
-    <input id="password" type="password" placeholder="Password">
-    <div class="btn-group">
-      <button id="toggleBtn">Switch to Register</button>
-      <button id="actionBtn">Login</button>
-    </div>
+  <!-- LOGIN STEP -->
+  <div id="loginStep">
+    <button class="neonBtn" id="loginBtn">Login</button>
+    <p>New user? <span id="showRegister" class="linkBtn">Register here</span></p>
   </div>
 
+  <!-- REGISTER STEP -->
+  <div id="registerStep" style="display:none;">
+    <h2 class="neon">Register</h2>
+    <input type="text" id="regUsername" placeholder="Username">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPassword" placeholder="Password">
+    <button class="neonBtn" id="regSubmit">Register</button>
+    <p>Already have account? <span id="backLogin" class="linkBtn">Login here</span></p>
+  </div>
+
+  <!-- MAIN AI BOX -->
   <div id="mainBox" style="display:none;">
     <textarea id="question" placeholder="Type your question here..."></textarea>
     <select id="language">
@@ -42,7 +48,7 @@
       <option>Hinglish</option>
       <option>Banglish</option>
     </select>
-    <button onclick="solve()">Solve Question</button>
+    <button onclick="solve()" class="neonBtn">Solve Question</button>
     <div id="answer"></div>
   </div>
 
