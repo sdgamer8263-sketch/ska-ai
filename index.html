@@ -5,6 +5,7 @@
 <title>SKA HOSTING BUDDY AI 1.0</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
 </head>
 <body>
 
@@ -44,6 +45,9 @@
   <!-- MAIN AI BOX -->
   <div id="mainBox" style="display:none;">
     <textarea id="question" placeholder="Type your question here..."></textarea>
+    <br>
+    <input type="file" id="scanImage" accept="image/*" capture="environment">
+    <button class="neonBtn" onclick="scanImage()">Scan Question Image</button>
     <select id="language">
       <option>English</option>
       <option>Hindi</option>
