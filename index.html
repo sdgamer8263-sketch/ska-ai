@@ -2,62 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA HOSTING BUDDY AI 1.0</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKA HOSTING BUDDY AI 1.0</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
 </head>
 <body>
+<div id="container">
 
-<div class="container">
+<h1>SKA HOSTING BUDDY AI 1.0</h1>
 
-  <div id="welcomeBox">
-    <h1 class="neon">🤖 SKA HOSTING BUDDY AI 1.0 🤖</h1>
-    <p class="subtitle">AI assistant for Class 1–12 & JEE questions</p>
-    <p class="why">
-      Why is this AI good?<br>
-      - Multi-language support<br>
-      - Scan or type questions<br>
-      - Step-by-step solutions<br>
-      - 24/7 help
-    </p>
-  </div>
+<!-- Login/Register -->
+<div id="authDiv">
+  <input type="text" id="usernameInput" placeholder="Username">
+  <input type="email" id="emailInput" placeholder="Email">
+  <input type="password" id="passwordInput" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <button id="registerBtn">Register</button>
+  <p id="authMsg"></p>
+</div>
 
-  <!-- LOGIN FORM -->
-  <div id="loginStep">
-    <h2 class="neon">Login</h2>
-    <input type="text" id="loginInput" placeholder="Email or Username">
-    <input type="password" id="loginPassword" placeholder="Password">
-    <button class="neonBtn" id="loginBtn">Login</button>
-    <p>New user? <span class="linkBtn" id="showRegister">Register here</span></p>
-  </div>
-
-  <!-- REGISTER FORM -->
-  <div id="registerStep" style="display:none;">
-    <h2 class="neon">Register</h2>
-    <input type="text" id="regUsername" placeholder="Username">
-    <input type="email" id="regEmail" placeholder="Email">
-    <input type="password" id="regPassword" placeholder="Password">
-    <button class="neonBtn" id="regSubmit">Register</button>
-    <p>Already have account? <span class="linkBtn" id="backLogin">Login here</span></p>
-  </div>
-
-  <!-- MAIN AI BOX -->
-  <div id="mainBox" style="display:none;">
-    <textarea id="question" placeholder="Type your question here..."></textarea>
-    <br>
-    <input type="file" id="scanImage" accept="image/*" capture="environment">
-    <button class="neonBtn" onclick="scanImage()">Scan Question Image</button>
-    <select id="language">
-      <option>English</option>
-      <option>Hindi</option>
-      <option>Bengali</option>
-      <option>Hinglish</option>
-      <option>Banglish</option>
-    </select>
-    <button class="neonBtn" onclick="solve()">Solve Question</button>
-    <div id="answer"></div>
-  </div>
+<!-- AI Question area -->
+<div id="aiDiv" style="display:none;">
+  <textarea id="questionInput" placeholder="Type your question here"></textarea>
+  <input type="file" id="imageFileInput" accept="image/*" capture="environment">
+  <input type="text" id="videoInput" placeholder="Paste video URL (optional)">
+  <select id="languageSelect">
+    <option value="English">English</option>
+    <option value="Hindi">Hindi</option>
+    <option value="Bengali">Bengali</option>
+    <option value="Hinglish">Hinglish</option>
+    <option value="Banglish">Banglish</option>
+  </select>
+  <button id="solveBtn">Solve</button>
+  <div id="answer">Step by step solution will appear here...</div>
+  <button id="logoutBtn" style="margin-top:15px;">Logout</button>
+</div>
 
 </div>
 
