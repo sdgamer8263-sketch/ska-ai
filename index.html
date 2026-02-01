@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>SKA HOSTING BUDDY AI 1.0</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4"></script>
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="script.js"></script>
 </head>
 <body>
+
   <div class="container">
 
     <div id="welcomeBox">
       <h1 class="neon">🤖 Welcome to SKA HOSTING BUDDY AI 1.0 🤖</h1>
       <p class="subtitle">Your AI assistant for Class 1–12 & JEE questions</p>
-      <p class="why">Why is this AI good?  
-      - Multi-language support  
-      - Scan or type your questions  
-      - Step-by-step solutions  
-      - 24/7 help</p>
+      <p class="why">
+        Why is this AI good?<br>
+        - Multi-language support<br>
+        - Scan or type your questions<br>
+        - Step-by-step solutions<br>
+        - 24/7 help
+      </p>
     </div>
 
     <div id="authBox">
       <h2 class="neon">Login / Register</h2>
-      <input id="email" placeholder="Email" type="email">
-      <input id="password" placeholder="Password" type="password">
+      <input id="email" type="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
       <div class="btn-group">
-        <button onclick="login()">Login</button>
-        <button onclick="register()">Register</button>
+        <button id="loginBtn">Login</button>
+        <button id="registerBtn">Register</button>
       </div>
     </div>
 
@@ -47,5 +48,8 @@
     </div>
 
   </div>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
