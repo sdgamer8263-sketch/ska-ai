@@ -1,40 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>SKA HOSTING BUDDY AI 1.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4"></script>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
+  <div class="container">
 
-<h2>🤖 SKA HOSTING BUDDY AI 1.0</h2>
+    <div id="welcomeBox">
+      <h1 class="neon">🤖 Welcome to SKA HOSTING BUDDY AI 1.0 🤖</h1>
+      <p class="subtitle">Your AI assistant for Class 1–12 & JEE questions</p>
+      <p class="why">Why is this AI good?  
+      - Multi-language support  
+      - Scan or type your questions  
+      - Step-by-step solutions  
+      - 24/7 help</p>
+    </div>
 
-<div id="loginBox">
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
+    <div id="authBox">
+      <h2 class="neon">Login / Register</h2>
+      <input id="email" placeholder="Email" type="email">
+      <input id="password" placeholder="Password" type="password">
+      <div class="btn-group">
+        <button onclick="login()">Login</button>
+        <button onclick="register()">Register</button>
+      </div>
+    </div>
 
-<div id="mainBox" style="display:none;">
-  <textarea id="question" placeholder="Type your question here..."></textarea>
+    <div id="mainBox" style="display:none;">
+      <textarea id="question" placeholder="Type your question here..."></textarea>
+      <input type="file" accept="image/*" onchange="scanImage(event)">
+      <select id="language">
+        <option>English</option>
+        <option>Hindi</option>
+        <option>Bengali</option>
+        <option>Hinglish</option>
+        <option>Banglish</option>
+      </select>
+      <button onclick="solve()">Solve Question</button>
+      <div id="answer"></div>
+    </div>
 
-  <input type="file" accept="image/*" onchange="scanImage(event)">
-  
-  <select id="language">
-    <option>English</option>
-    <option>Hindi</option>
-    <option>Bengali</option>
-    <option>Hinglish</option>
-    <option>Banglish</option>
-  </select>
-
-  <button onclick="solve()">Solve Question</button>
-
-  <div id="answer"></div>
-</div>
-
-<script src="script.js"></script>
-<script src="firebase.js"></script>
+  </div>
 </body>
 </html>
