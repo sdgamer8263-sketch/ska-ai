@@ -1,5 +1,5 @@
 // ------------------- CONFIG -------------------
-const API_KEY = "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";
+const API_KEY = "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";
 let users = JSON.parse(localStorage.getItem("skaUsers") || "{}");
 let currentUser = null;
 
@@ -23,7 +23,6 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
         return;
     }
 
-    // Find user by email or username
     let found = null;
     for(let key in users){
         if(key === loginInput || users[key].username === loginInput){
@@ -60,59 +59,56 @@ document.getElementById("regSubmit").addEventListener("click", ()=>{
 
     users[email] = {username,password,lastQA:null};
     localStorage.setItem("skaUsers", JSON.stringify(users));
-    alert("Registered successfully! You can login now.");
+    alert("Registered successfully!");
     document.getElementById("registerStep").style.display="none";
     document.getElementById("loginStep").style.display="block";
 });
 
-// ------------------- SCAN IMAGE USING TESSERACT -------------------
+// ------------------- SCAN IMAGE -------------------
 async function scanImage(){
     const file = document.getElementById("scanImage").files[0];
-    if(!file){ alert("Select an image to scan!"); return; }
+    if(!file){ alert("Select an image"); return; }
 
     const answerDiv = document.getElementById("answer");
-    answerDiv.innerText = "Scanning image...";
+    answerDiv.innerText = "Scanning...";
 
     try {
-        const result = await Tesseract.recognize(file, 'eng',{
-            logger: m => console.log(m)
-        });
+        const result = await Tesseract.recognize(file, 'eng');
         document.getElementById("question").value = result.data.text.trim();
-        answerDiv.innerText = "Image scanned! You can now solve the question.";
-    } catch(e){
-        console.error(e);
-        answerDiv.innerText = "Error scanning image!";
+        answerDiv.innerText = "Image scanned!";
+    } catch {
+        answerDiv.innerText = "Scan failed!";
     }
 }
 
-// ------------------- OPENROUTER API REQUEST -------------------
+// ------------------- OPENROUTER API -------------------
 async function askOpenRouter(questionText){
     try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions",{
             method:"POST",
             headers:{
-                "Authorization":"Bearer "+API_KEY,
+                "Authorization":"Bearer " + API_KEY,
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({
-                model:"meta-llama/llama-3.1-405b-instruct:free",
-                messages:[{role:"user", content: questionText}],
-                reasoning:true,
-                max_tokens:500
+                model: "meta-llama/llama-3.1-70b-instruct", // ✅ :free REMOVED
+                messages:[
+                    { role:"user", content: questionText }
+                ],
+                max_tokens: 500
             })
         });
 
         const data = await response.json();
-        console.log("OpenRouter API response:", data);
+        console.log(data);
         return data.choices?.[0]?.message?.content || "No answer returned";
 
-    } catch(err){
-        console.error(err);
-        return "Error fetching answer!";
+    } catch {
+        return "Network error";
     }
 }
 
-// ------------------- SOLVE QUESTION -------------------
+// ------------------- SOLVE -------------------
 async function solve(){
     const questionInput = document.getElementById("question").value.trim();
     if(!questionInput){
@@ -120,33 +116,14 @@ async function solve(){
         return;
     }
 
-    const lang = document.getElementById("language").value;
     const answerDiv = document.getElementById("answer");
     answerDiv.innerText = "Processing...";
 
-    // Ask OpenRouter
     let ans = await askOpenRouter(questionInput);
 
-    // Multi-language prefix
-    if(lang=="Hindi") ans="उत्तर: "+ans;
-    if(lang=="Bengali") ans="উত্তর: "+ans;
-    if(lang=="Hinglish") ans="Answer: "+ans;
-    if(lang=="Banglish") ans="Answer: "+ans;
-
-    // Step-by-step typing animation
     answerDiv.innerText = "";
-    for(let i=0;i<ans.length;i++){
-        answerDiv.innerText += ans[i];
-        await new Promise(r => setTimeout(r, 15));
-    }
-
-    // Save last QA per user
-    if(currentUser){
-        users[currentUser].lastQA = {
-            question: questionInput,
-            answer: ans,
-            timestamp: new Date().toLocaleString()
-        };
-        localStorage.setItem("skaUsers", JSON.stringify(users));
+    for(let c of ans){
+        answerDiv.innerText += c;
+        await new Promise(r=>setTimeout(r,15));
     }
 }
